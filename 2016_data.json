@@ -1,0 +1,41 @@
+[
+    {
+        "setter": "BEN MOON",
+        "grade": "6B+",
+        "name": "FAR FROM THE MADDING CROWD",
+        "start_holds": [
+            [
+                "C",
+                5
+            ],
+            [
+                "E",
+                6
+            ]
+        ],
+        "middle_holds": [
+            [
+                "E",
+                8
+            ],
+            [
+                "F",
+                11
+            ],
+            [
+                "C",
+                13
+            ],
+            [
+                "D",
+                15
+            ]
+        ],
+        "finish_holds": [
+            [
+                "D",
+                18
+            ]
+        ]
+    }
+]
