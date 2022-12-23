@@ -1,6 +1,7 @@
 
 from ppadb.client import Client
 from typing import Tuple, List
+import os
 import json
 import io
 import cv2
@@ -115,6 +116,7 @@ def get_basic_climb_info(img: np.array) -> Tuple[str, str, str]:
         name, grade, setter
     """
     info = pytesseract.image_to_string(img[129:365, 106:980])
+    info = os.linesep.join([s for s in info.splitlines() if s])
     lines = info.split("\n")
     name, grade = lines[0].split(",")
     grade = grade.strip()
@@ -158,30 +160,32 @@ if __name__ == "__main__":
         start_holds = get_codes_for_color(img, START_COLOR)
         middle_holds = get_codes_for_color(img, MIDDLE_COLOR)
         finish_holds = get_codes_for_color(img, FINISH_COLOR)
-
-        # get climb basic info
-        name, grade, setter = get_basic_climb_info(img)
-        print(f"Name: {name}\nGrade: {grade}\nSetter: {setter}")
-        print(f"Start holds: ", end = "")
-        print_hold_list(start_holds)
-        print(f"Middle holds: ", end = "")
-        print_hold_list(middle_holds)
-        print(f"Finish holds: ", end = "")
-        print_hold_list(finish_holds)
-
-
-
-        # save data
-        data.append(
-            {
-                "setter": setter,
-                "grade": grade,
-                "name": name,
+        datum = {
                 "start_holds": start_holds,
                 "middle_holds": middle_holds,
                 "finish_holds": finish_holds,
-            }
-        )
+        }
+
+        # get climb basic info
+        try:
+            name, grade, setter = get_basic_climb_info(img)
+            print(f"Name: {name}\nGrade: {grade}\nSetter: {setter}")
+            print(f"Start holds: ", end = "")
+            print_hold_list(start_holds)
+            print(f"Middle holds: ", end = "")
+            print_hold_list(middle_holds)
+            print(f"Finish holds: ", end = "")
+            print_hold_list(finish_holds)
+            datum["setter"] = setter
+            datum["grade"] = grade
+            datum["name"] = name
+        except Exception as _:
+            print("Could not read basic climb info")
+            info = pytesseract.image_to_string(img[129:365, 106:980])
+            datum["raw_text"] = info
+
+        # save data
+        data.append(datum)
 
         if i % save_iter == 0:
             with open(out_data_path, "w") as f:
