@@ -8,6 +8,7 @@ import numpy as np
 import imageio
 from scipy.ndimage.filters import maximum_filter
 import pytesseract
+import time
 
 # user: moonscraper
 # pwd: moonscraper 
@@ -18,6 +19,7 @@ TEMPLATE_H, TEMPLATE_W = CIRCLE_TEMPLATE.shape
 FINISH_COLOR = np.array([255, 0, 0, 255])
 START_COLOR = np.array([0, 255, 0, 255])
 MIDDLE_COLOR = np.array([0, 0, 255, 255])
+pytesseract.pytesseract.tesseract_cmd = r"/usr/local/Cellar/tesseract/5.2.0/bin/tesseract"
 #Rough bolthole coordinates:
 #       A         B          ...   K
 # 18   (156, 511) (238, 511)
@@ -137,6 +139,7 @@ if __name__ == "__main__":
     # 3. Change num_problems below to be the number of problems you want to scrape
     # 4. Select the oldest problem and run this script
 
+
     # TODO: make this a script with args
     num_problems = 57624
     out_data_path = "2016_data.json"
@@ -144,8 +147,10 @@ if __name__ == "__main__":
 
     device = connect_to_device()
     data = []
+    #times = []
 
     for i in range(num_problems):
+        #s = time.time()
         print(20 * "-" + f" Processing climb: {i + 1}/{num_problems} " + 20*"-")
         img = imageio.v2.imread(io.BytesIO(device.screencap())) # shape = (2280, 1080, 4)
 
@@ -184,5 +189,12 @@ if __name__ == "__main__":
 
         device.shell("input touchscreen swipe 700 1140 400 1140") # swipe to next 
 
+        # running average for time estimate
+        #f = time.time()
+        #dt = f - s
+        #times.append(dt)
+        #est = (sum(times)/len(times)) * (num_problems - (i+1))
+        #print(f"Estimated remaining time: {est/3600} hours")
+
     with open(out_data_path, "w") as f:
-        json.dump(data, f, indent = 4)
+        json.dump(data, f, indent=4)
