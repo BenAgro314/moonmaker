@@ -144,7 +144,7 @@ if __name__ == "__main__":
 
     # TODO: make this a script with args
     num_problems = 57624
-    out_data_path = "2016_data.json"
+    out_data_path = "data/2016_data.json"
     save_iter = 100
 
     device = connect_to_device()
